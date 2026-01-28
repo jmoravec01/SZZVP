@@ -1,0 +1,38 @@
+Proxmox - údaje od profesorů
+2x VM (OPNsense + RockyLinux 9.5)
+
+ČEHO JSEM DOSÁHL
+Nainstaloval jsem OPNsense 25.7.
+Do GUI se dostanu (na VM) přes IP 192.168.30.1.
+konečně funguje DHCP
+vmbr2 = vlan aware
+
+neustále používán dhclient - defaultně není nainstalován = použit nmcli
+
+ÚSKALÍ
+Nešel mi Rocky 10.0 - dostával jsem Kernel panic. Použitá starší verze 9.5. Zapomněl jsem, že je to minimal, tak použito Ubuntu (iso bylo ve složce).
+Boj s VLAN a Proxmox bridgem.
+- VLAN u net1 (WAN) mi přestane dávat IP?
+- tak už to nejde ani bez vlan
+- dostával jsem na default síťovce errory při změně VLAN, u Intel E1000 už ne
+
+Nakonec použit Ubuntu.
+
+OPNsense přístup na 192.168.30.1 - nastavení skrze set interface IP address.
+
+V 10:47 hotový základ (OPNsense + Ubuntu) - funkční DHCP + příprava na VLAN.
+V 11:23 opraveno. Nefungovala Proxmox výchozí síťovka - nastaveno na Intel E1000.
+OPNSense využívá IP 192.168.30.1 - chci mít VLAN30, tudíž nutná dočasná změna. Rozbil jsem si to - změna IP OPNSense a ponechal jsem DHCP na jinou síť.
+- zbytečné problémy
+VLANY vytvořeny v OPNSense (30 MGMT, 20 DMZ)
+- u Ubuntu jedna fallback (net0), VLANY (net1 = 30, net2 = 20)
+
+**Pravidla**
+OPNsense jsou firewall pravidla vždy “per interface” a nové rozhraní (např. MGMT = VLAN30, DMZ = VLAN20) má po vytvoření typicky stav “nic nepovoleno”. Přidána rules.
+Zprovozníš management přes oddělenou VLAN (MGMT)
+– to je reálná síťová segmentace (perimetr a vrstvy).
+Můžeš prokázat kontrolu přístupu
+– například: MGMT může spravovat firewall (443), DMZ nemůže.
+Připravíš půdu pro SOC věci
+– logování, Wazuh, reakce: potřebuješ spolehlivě funkční segmenty a jasná pravidla.
+
