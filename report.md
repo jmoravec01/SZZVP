@@ -36,6 +36,7 @@ Promiscuous mode zapnut - v LABU.
 aktivovány tyto rules:
 - Feodo Tracker, ThreatFox, 3coresec
 
+------------------------------------------------------------------------------------------------------------------
 
 ***1. Síťová architektura a bezpečnostní perimetr***\
 **Topologie a zóny**\
