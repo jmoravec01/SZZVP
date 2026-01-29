@@ -1,4 +1,4 @@
-**Nastavení**
+**Nastavení**\
 Instalace OPNsense 25.7 ve VM300 (Moravec-OPNsense).
 - dávat pozor na login "installer" jako první
 - prvotní IP nastavena na 192.168.99.1 (staticky, později až budou VLANY přenastavíme)
@@ -6,14 +6,14 @@ Instalace OPNsense 25.7 ve VM300 (Moravec-OPNsense).
 VM Ubuntu VM301 (Moravec-Ubuntu).
 - slouží pro GUI ovládání OPNsense
 
-302VM (Moravec-Wazuh)
+302VM (Moravec-Wazuh)\
 303VM (Moravec-DMZ)
 
-OPNsense nastavení:
-em0 = LAN
+OPNsense nastavení:\
+em0 = LAN\
 em1 = WAN
 
-***Chyby:***
+***Chyby:***\
 VLAN
 - vytvořeny 20 a 30, DHCP připraveny
 - nefungují, zkoušel jsem VLANY obejít skrze vlastní bridge = VM se nespouští s VLAN Tagem
@@ -69,3 +69,6 @@ WAN → LAN/SIEM: zakázat.
 DMZ → LAN: zakázat (default deny).
 DMZ → SIEM: povolit jen nutné porty pro logování/agent komunikaci (později Wazuh).
 LAN/VPN → (DMZ, SIEM): povolit pouze administraci.
+
+
+WAZUH: plugin v OPNsense
