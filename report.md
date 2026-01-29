@@ -31,7 +31,7 @@ Block bogon networks
 Unbound DNS → Query Forwarding (nutné!)
 Opravilo internet.
 
-***TESTING SURICATY***
+***TESTING SURICATY***\
 Promiscuous mode zapnut - v LABU.
 aktivovány tyto rules:
 - Feodo Tracker, ThreatFox, 3coresec
@@ -121,6 +121,6 @@ Architektura perimetru je realizována virtuálním firewallem OPNsense na Proxm
 
 Bezpečnost byla navržená podle principu least privilege – tedy povolit jen to, co je opravdu potřeba, a zbytek blokovat. Z internetu (WAN) se počítalo pouze s otevřením jednoho konkrétního publikovaného portu do DMZ, zatímco přímý přístup z WAN do LAN i do SIEM zóny měl zůstat zakázaný. Vnitřní pravidla byla připravená podobně: DMZ neměla mít možnost komunikovat do LAN vůbec a směrem do SIEM zóny se plánovalo povolit jen nezbytné porty pro sběr logů nebo komunikaci agentů (např. pro Wazuh). Pro vzdálenou správu se připravoval VPN přístup přes WireGuard – klíče i konfigurace jsou připravené v OPNsense, ale nebylo možné ho definitivně nasadit a ověřit z externí sítě (kvůli omezením upstream sítě a chybějícímu vhodnému externímu testovacímu přístupu).
 
-Současně se při konfiguraci WAN muselo počítat s tím, že v instituci nemusí být „WAN“ veřejná adresa, ale klidně RFC1918 (10.x / 172.16–31 / 192.168.x). Proto bylo nutné upravit defaultní bezpečnostní volby na WAN (blokování privátních a bogon sítí) a nastavit DNS tak, aby konektivita fungovala – konkrétně se osvědčilo zapnout v Unbound DNS režim Query Forwarding, což následně opravilo přístup k internetu z interních VM. Včetně vypnutí blokování privátních sítí.
+Současně se při konfiguraci WAN muselo počítat s tím, že v instituci nemusí být „WAN“ veřejná adresa, ale klidně RFC1918 (10.x / 172.16–31 / 192.168.x). Proto bylo nutné upravit defaultní bezpečnostní volby na WAN (blokování privátních a bogon sítí) a nastavit DNS tak, aby konektivita fungovala – konkrétně se osvědčilo zapnout v Unbound DNS režim Query Forwarding, což následně opravilo přístup k internetu z interních VM. Nutné bylo i vypnutí blokování privátních sítí.
 
 Detekce je realizována pomocí IDS modulu Suricata na OPNsense a plánovaného SIEM řešení Wazuh. Suricata byla aktivní včetně vybraných threat-intel rulesetů, nicméně v rámci laboratorních testů nebyla spolehlivě prokázána detekce typických anomálií (scan/brute-force), což souvisí s volbou signatur a umístěním senzoru vůči testovanému provozu. Automatizovaná reakce (alerting/active response) byla navržena přes Wazuh, ale nebyla dokončena kvůli problémům s kompatibilitou pluginu a verzováním balíčků; jako další krok je vhodné uvažovat standardní integraci přes syslog a následnou korelaci a reakce na úrovni SIEM.
