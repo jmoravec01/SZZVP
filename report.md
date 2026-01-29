@@ -37,8 +37,8 @@ aktivovány tyto rules:
 - Feodo Tracker, ThreatFox, 3coresec
 
 
-**Síťová architektura a bezpečnostní perimetr**\
-***Topologie a zóny***\
+*Síťová architektura a bezpečnostní perimetr*\
+**Topologie a zóny**\
 Perimetr je realizován pomocí OPNsense na Proxmoxu. Síť je rozdělena do zón:
 WAN (externí síť / internet) – připojení přes Proxmox vmbr0 (uplink je ve VLAN 30 na straně WAN).
 LAN (interní síť) – 192.168.99.0/24, gateway 192.168.99.1 (OPNsense), Proxmox vmbr4.
@@ -47,11 +47,11 @@ SIEM (SOC zóna) – 192.168.30.0/24, gateway 192.168.30.1 (OPNsense).
 Cíl rozdělení je oddělit veřejně dostupnou službu (DMZ) od interní sítě (LAN) a od logovací/detekční infrastruktury (SIEM).
 
 
-***Síťová segmentace (VLAN / oddělené subnety)***\
+**Síťová segmentace (VLAN / oddělené subnety)**\
 Segmentace je řešena oddělenými subnety (LAN, DMZ, SIEM) a řízením provozu přes firewall pravidla v OPNsense.
 Původně bylo plánováno použití VLAN, ale při implementaci se VLAN segmentace nepodařila stabilně zprovoznit (v některých konfiguracích po přidání VLAN přestával fungovat internet z interních VM). Z tohoto důvodu je segmentace v projektu doložena jako oddělené subnety s kontrolou komunikace na firewallu.
 
-***L7 firewall a perimetr***\
+**L7 firewall a perimetr**\
 OPNsense zajišťuje:
 směrování mezi LAN/DMZ/SIEM,
 NAT směrem do WAN,
@@ -62,7 +62,7 @@ Pro vzdálený administrátorský přístup je připraven WireGuard:
 - klíče vygenerovány, konfigurace připravena v OPNsense
 - Ověření z externí sítě zatím nebylo možné provést (není k dispozici vhodný externí testovací přístup; zároveň záleží na omezeních upstream sítě na odchozí UDP a případném port forwardingu).
 
-***Bezpečnostní pravidla (princip)***\
+**Bezpečnostní pravidla (princip)**\
 Použitý princip: least privilege.
 WAN → DMZ: povolit pouze publikovaný port služby.
 WAN → LAN/SIEM: zakázat.
