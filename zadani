@@ -1,0 +1,47 @@
+Zadání úlohy:
+Navrhněte, implementujte a otestujte zjednodušenou laboratorní SOC infrastrukturu, která umožní detekci, analýzu a základní reakci na bezpečnostní události v simulovaném síťovém prostředí malé organizace.
+Řešení musí reflektovat reálné principy fungování SOC a prokázat schopnost studenta:
+•	navrhnout bezpečnou síťovou architekturu,
+•	konfigurovat monitorovací a detekční nástroje,
+•	analyzovat bezpečnostní události,
+•	realizovat základní reakci na incident.
+Organizace požaduje:
+•	interní síť se serverem a min. dvěma subnety koncových stanic,
+•	veřejně dostupnou službu,
+•	oddělení jednotlivých částí sítě,
+•	dohled nad bezpečnostními událostmi,
+•	včasnou detekci podezřelé aktivity,
+•	vzdálený přístup pro administrátora,
+•	základní formy automatizované reakce.
+Hodnocené funkcionality řešení
+1.	Síťová architektura a bezpečnostní perimetr
+•	návrh logické topologie sítě (např. LAN, DMZ, externí síť),
+•	nasazení L7 firewallu (např. s HTTP/SSH pravidly),
+•	realizaci síťové segmentace (VLAN / oddělené subnety),
+•	VPN přístup pro vzdáleného administrátora,
+•	port forwardingu na vybranou službu v DMZ,
+•	aplikaci bezpečnostních pravidel.
+2.	Detekce a monitoring bezpečnostních událostí
+•	centrální logovací systém (SIEM / log server),
+•	sběr logů minimálně ze dvou různých zdrojů, např.:	 firewall, server (SSH, web), koncová (VM) stanice,
+•	základní normalizace a přehled logů,
+•	detekci alespoň dvou typických bezpečnostních anomálií, např.: opakované neúspěšné, přihlášení (brute-force), přístup na zakázaný port, podezřelé chování z jedné IP adresy.
+3.	Automatizovaná reakce a alerting:
+•	jednoduchý alertovací mechanismus, např.:
+o	generování alertu při splnění podmínky,
+o	odeslání upozornění (log, e-mail, konzole).
+•	základní reakci na incident, např.:
+o	dočasné blokování IP adresy,
+o	změnu firewall pravidla,
+o	zvýraznění incidentu v logovacím systému.
+Ověření funkčnosti
+Student musí prokázat:
+•	vznik logu,
+•	jeho zachycení v centrálním systému,
+•	vyvolání alertu,
+•	provedení reakce.
+Požadavek na odevzdání
+Dokumentace, obsahující:
+•	popis architektury,
+•	použitá bezpečnostní opatření,
+•	popis detekce a reakce.
