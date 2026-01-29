@@ -101,22 +101,26 @@ Suricata byla v OPNsense aktivní, ale při testování na provozu generovaném 
 Z důvodu výše uvedených problémů nebylo možné spolehlivě prokázat detekci alespoň dvou typických bezpečnostních anomálií v požadované podobě.
 
 ***3. Automatizovaná reakce a alerting***\
-*Zvolený koncept*\
+**Zvolený koncept**\
 Automatizovaná reakce měla být realizována přes Wazuh:
 alert při splnění podmínky (např. brute-force / scan),
-následná reakce (např. dočasné blokování IP na OPNsense, změna pravidla, zvýraznění incidentu).
-*Realizace*\
+následná reakce (např. dočasné blokování IP na OPNsense, změna pravidla, zvýraznění incidentu).\
+
+**Realizace**\
 Wazuh byl nasazen, nicméně nebyl dostatek času na kompletní integraci s OPNsense a zprovoznění plné automatizované reakce.
 Hlavní technická překážka (Wazuh plugin v OPNsense)
 Při pokusu o instalaci/provoz Wazuh pluginu na OPNsense docházelo k opakovaným problémům s verzemi:
-plugin požadoval novější verzi balíčku (např. 25.7.11_9), i když byla nainstalovaná aktuální (např. 27.5.11 - bližší info verze v OPNsense jsem nenašel),
+- plugin požadoval novější verzi balíčku (např. 25.7.11_9), i když byla nainstalovaná aktuální (např. 27.5.11 - bližší info verze v OPNsense jsem nenašel),
 při pokusu o aktualizaci firmware se objevovalo („přání nového roku“) - pravděpodobně aktualizováno, což znemožnilo standardní aktualizační postup a zkomplikovalo troubleshooting.
-Z těchto důvodů nebylo možné plně propojit OPNsense (firewall události) s Wazuh a navázat na to alerting/active response.
+
+Z těchto důvodů nebylo možné plně propojit OPNsense s Wazuh a navázat na to alerting/active response.
 
 ------------------------------------------------------------------------------------------------------------------
 
 Architektura perimetru je realizována virtuálním firewallem OPNsense na Proxmoxu, který směruje provoz mezi zónami LAN/DMZ/SIEM a vynucuje bezpečnostní politiku na hranicích segmentů. Segmentace je provedena oddělenými L3 subnety a komunikace mezi nimi je řízena firewall pravidly v režimu default deny. Do internetu je provoz překládán pomocí NAT, veřejná služba v DMZ je publikována kontrolovaně přes port forward. Administrátorský přístup je plánován přes WireGuard VPN, aby bylo management rozhraní dostupné pouze z důvěryhodného kanálu.
 
-Bezpečnostní opatření vychází z principu least privilege: z WAN je povolen pouze publikovaný port do DMZ, přístupy do LAN a SIEM jsou blokovány; DMZ nemá přístup do LAN, směrem do SIEM jsou povoleny pouze nutné porty pro logování/agent komunikaci. Na WAN rozhraní je zohledněno prostředí instituce (WAN může být RFC1918), proto je upravena konfigurace blokování privátních/bogon sítí a DNS forwardování tak, aby byla zachována konektivita.
+Bezpečnost byla navržená podle principu least privilege – tedy povolit jen to, co je opravdu potřeba, a zbytek blokovat. Z internetu (WAN) se počítalo pouze s otevřením jednoho konkrétního publikovaného portu do DMZ, zatímco přímý přístup z WAN do LAN i do SIEM zóny měl zůstat zakázaný. Vnitřní pravidla byla připravená podobně: DMZ neměla mít možnost komunikovat do LAN vůbec a směrem do SIEM zóny se plánovalo povolit jen nezbytné porty pro sběr logů nebo komunikaci agentů (např. pro Wazuh). Pro vzdálenou správu se připravoval VPN přístup přes WireGuard – klíče i konfigurace jsou připravené v OPNsense, ale nebylo možné ho definitivně nasadit a ověřit z externí sítě (kvůli omezením upstream sítě a chybějícímu vhodnému externímu testovacímu přístupu).
+
+Současně se při konfiguraci WAN muselo počítat s tím, že v instituci nemusí být „WAN“ veřejná adresa, ale klidně RFC1918 (10.x / 172.16–31 / 192.168.x). Proto bylo nutné upravit defaultní bezpečnostní volby na WAN (blokování privátních a bogon sítí) a nastavit DNS tak, aby konektivita fungovala – konkrétně se osvědčilo zapnout v Unbound DNS režim Query Forwarding, což následně opravilo přístup k internetu z interních VM. Včetně vypnutí blokování privátních sítí.
 
 Detekce je realizována pomocí IDS modulu Suricata na OPNsense a plánovaného SIEM řešení Wazuh. Suricata byla aktivní včetně vybraných threat-intel rulesetů, nicméně v rámci laboratorních testů nebyla spolehlivě prokázána detekce typických anomálií (scan/brute-force), což souvisí s volbou signatur a umístěním senzoru vůči testovanému provozu. Automatizovaná reakce (alerting/active response) byla navržena přes Wazuh, ale nebyla dokončena kvůli problémům s kompatibilitou pluginu a verzováním balíčků; jako další krok je vhodné uvažovat standardní integraci přes syslog a následnou korelaci a reakce na úrovni SIEM.
