@@ -37,7 +37,7 @@ aktivovány tyto rules:
 - Feodo Tracker, ThreatFox, 3coresec
 
 
-*Síťová architektura a bezpečnostní perimetr*\
+***1. Síťová architektura a bezpečnostní perimetr***\
 **Topologie a zóny**\
 Perimetr je realizován pomocí OPNsense na Proxmoxu. Síť je rozdělena do zón:
 WAN (externí síť / internet) – připojení přes Proxmox vmbr0 (uplink je ve VLAN 30 na straně WAN).
